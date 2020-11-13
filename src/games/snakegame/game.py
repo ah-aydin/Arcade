@@ -37,6 +37,12 @@ class Game():
         if key == pg.K_LEFT:
             self.snake.set_direction(gv.LEFT)
 
+    def mouse_move_event(self, pos):
+        pass
+
+    def mouse_click_event(self, pos):
+        pass
+
     def update(self):
         self.snake.move()
         self.update_grid()

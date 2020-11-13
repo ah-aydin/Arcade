@@ -7,8 +7,11 @@ import sys
 from app import App
 
 from games import SnakeGame
+from ui import *
 
+# Initialize pygame
 pg.init()
+pg.font.init()
 
 # Global variables
 FRAMES = 60
@@ -22,7 +25,8 @@ BLACK = (0, 0, 0)
 App.set_surface(pg.display.set_mode(flags=pg.FULLSCREEN))
 
 # Create the game
-game = SnakeGame()
+#game = SnakeGame()
+App.set_current_game(MainMenu())
 
 while App.running:
     for event in pg.event.get():
@@ -31,7 +35,11 @@ while App.running:
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_q:
                 App.set_running(False)
-            game.key_event(event.key)
+            App.get_current_game().key_event(event.key)
+        if event.type == pg.MOUSEMOTION:
+            App.get_current_game().mouse_move_event(pg.mouse.get_pos())
+        if event.type == pg.MOUSEBUTTONDOWN:
+            App.get_current_game().mouse_click_event(pg.mouse.get_pos())
 
     # Update the timer
     CURRENT_FRAME = time.time()
@@ -46,7 +54,7 @@ while App.running:
         App.clear_surface(BLACK)
 
         # Update the game state
-        game.update()
+        App.get_current_game().update()
 
         # Update the display
         pg.display.update()
