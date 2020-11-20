@@ -5,7 +5,7 @@ import pygame as pg
 from app import App
 
 # Games
-from games import SnakeGame
+from scenes import SnakeGame
 
 # Ui elements
 from .button import Button

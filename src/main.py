@@ -6,8 +6,7 @@ import sys
 # App modules
 from app import App
 
-from games import SnakeGame
-from ui import *
+from scenes import *
 
 # Initialize pygame
 pg.init()
