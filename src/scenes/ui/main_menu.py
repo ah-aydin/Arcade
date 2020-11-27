@@ -2,30 +2,44 @@
 import pygame as pg
 
 # App modules
-from app import App
+import app
 
-# Games
+# Scene
+from scenes import SnakeGame
+from scenes.scene import Scene
+
 from scenes import SnakeGame
 
 # Ui elements
 from .button import Button
+from .widget import Clickable
 
-class MainMenu:
+class MainMenu(Scene):
     def __init__(self):
-        self.elements = []
-        self.elements.append(
-            Button(
-                (200, 100),
-                (500, 500),
-                (255, 0, 0),
-                (0, 255, 0),
-                "Play",
-                16,
-                (0, 0, 0)
-            )
-        )
+        super(MainMenu, self).__init__()
+        self.uiElements = [
+            Button((100, 100), (300, 150), (255, 0, 0)),
+            Button((500, 100), (300, 150), (255, 0, 0)),
+            Button((900, 100), (300, 150), (255, 0, 0)),
+            Button((100, 400), (300, 150), (255, 0, 0)),
+        ]
 
-        self.elements[0].set_on_click(lambda: App.set_current_game(SnakeGame()))
+        self.uiElements[0].set_on_mouse_click(lambda: app.App.set_current_game(SnakeGame()))
+        self.uiElements[1].set_on_mouse_click(lambda: app.App.set_running(False))
+        self.uiElements[2].set_on_mouse_click(lambda: print(3))
+        self.uiElements[3].set_on_mouse_click(lambda: print(4))
+
+        screen_size = app.App.get_surface().get_size()
+        self.mouseClickMapping = [[None for y in range(screen_size[0])] for x in range(screen_size[1])]
+        self.generateMouseClickMapping()
+
+    def generateMouseClickMapping(self):
+        for elem in self.uiElements:
+            if issubclass(type(elem), Clickable):
+                xpos, ypos = elem.pos
+                for x in range(elem.size[0]):
+                    for y in range(elem.size[1]):
+                        self.mouseClickMapping[ypos + y][xpos + x] = elem
     
     def key_event(self, key):
         pass
@@ -34,18 +48,13 @@ class MainMenu:
         self.render()
 
     def render(self):
-        for elem in self.elements:
+        for elem in self.uiElements:
             elem.render()
     
     def mouse_move_event(self, pos):
-        for elem in self.elements:
-            if pos[0] >= elem.pos[0] and pos[0] <= elem.pos[0] + elem.size[0] and pos[1] >= elem.pos[1] and pos[1] <= elem.pos[1] + elem.size[1]:
-                elem.on_hover()
-            else:
-                elem.un_hover()
+        return
     
     def mouse_click_event(self, pos):
-        for elem in self.elements:
-            if elem.is_hovered:
-                elem.on_click()
-            
+        elem = self.mouseClickMapping[pos[1]][pos[0]]
+        if elem != None:
+            elem.on_mouse_click()

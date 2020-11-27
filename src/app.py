@@ -1,3 +1,5 @@
+import scenes.scene as ss
+
 class App():
 
     ##################################################################
@@ -29,7 +31,7 @@ class App():
     # current game/menu methods
     current_game = None
     @classmethod
-    def set_current_game(cls, game):
+    def set_current_game(cls, game : ss.Scene):
         cls.current_game = game
     @classmethod
     def get_current_game(cls):

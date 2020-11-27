@@ -6,7 +6,7 @@ import sys
 # App modules
 from app import App
 
-from scenes import *
+from scenes import MainMenu
 
 # Initialize pygame
 pg.init()

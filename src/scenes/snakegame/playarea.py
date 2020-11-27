@@ -2,7 +2,7 @@
 import pygame as pg
 
 # App modules
-from app import App
+import app
 
 # Game modules
 from .game_variables import GameVariables as gv
@@ -11,8 +11,8 @@ class PlayArea():
 
     def __init__(self, dimention, tile_width):
         # Get screen dimentions
-        swidth = App.get_surface().get_width()
-        sheight = App.get_surface().get_height()
+        swidth = app.App.get_surface().get_width()
+        sheight = app.App.get_surface().get_height()
         # Calculate PlayArea dimention
         self.dimention = dimention * tile_width
         self.tile_count = dimention
@@ -31,25 +31,25 @@ class PlayArea():
     def render(self):
         # Draw play area lines clockwise starting from top-left corner
         pg.draw.line(
-            App.get_surface(),
+            app.App.get_surface(),
             gv.WHITE,
             self.top_left,
             (self.bottom_right[0], self.top_left[1])
         )
         pg.draw.line(
-            App.get_surface(),
+            app.App.get_surface(),
             gv.WHITE,
             (self.bottom_right[0], self.top_left[1]),
             self.bottom_right
         )
         pg.draw.line(
-            App.get_surface(),
+            app.App.get_surface(),
             gv.WHITE,
             self.bottom_right,
             (self.top_left[0], self.bottom_right[1])
         )
         pg.draw.line(
-            App.get_surface(),
+            app.App.get_surface(),
             gv.WHITE,
             (self.top_left[0], self.bottom_right[1]),
             self.top_left

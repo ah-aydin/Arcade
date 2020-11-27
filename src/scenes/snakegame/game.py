@@ -3,7 +3,8 @@ import random as rnd
 import pygame as pg
 
 # App modules
-from app import App
+import app
+from scenes.scene import Scene
 
 # Game modules
 from .playarea import PlayArea
@@ -11,10 +12,10 @@ from .snake import Snake, Food
 from .game_variables import GameVariables as gv
 
 
-class Game():
+class Game(Scene):
 
     def __init__(self):
-        gv.TILE_WIDTH = (App.get_surface().get_height() - 200) // gv.PLAY_AREA_DIMENTION
+        gv.TILE_WIDTH = (app.App.get_surface().get_height() - 200) // gv.PLAY_AREA_DIMENTION
         self.pa = PlayArea(gv.PLAY_AREA_DIMENTION, gv.TILE_WIDTH)
         self.snake = Snake(5, (gv.PLAY_AREA_DIMENTION / 2, gv.PLAY_AREA_DIMENTION / 2), gv.TILE_WIDTH, gv.BLUE, 4)
         self.food = Food(gv.PURPLE, gv.TILE_WIDTH)

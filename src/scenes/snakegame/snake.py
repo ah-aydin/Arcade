@@ -3,7 +3,7 @@ import random as rnd
 import pygame as pg
 
 # App modules
-from app import App
+import app
 
 # Game modules
 from .game_variables import GameVariables as gv
@@ -17,7 +17,7 @@ class Food():
     
     def render(self):
         pg.draw.rect(
-            App.get_surface(),  # surface
+            app.App.get_surface(),  # surface
             self.color,         # color
             (                   # rect
                 self.pos[0] * gv.TILE_WIDTH + 1 + gv.PLAY_AREA_TOP_LEFT[0],
@@ -61,7 +61,7 @@ class Part():
 
     def render(self):
         pg.draw.rect(
-            App.get_surface(),  # surface
+            app.App.get_surface(),  # surface
             self.color,         # color
             (                   # rect
                 self.pos[0] * gv.TILE_WIDTH + 1 + gv.PLAY_AREA_TOP_LEFT[0],
@@ -112,7 +112,7 @@ class Snake():
         for i in range(1, len(self.parts)):
             # TODO Instead of ending the program return to the main menu
             if self.head.pos == self.parts[i].pos:
-                App.set_running(False)
+                app.App.set_running(False)
             self.parts[i].move()
     
     def render(self):
