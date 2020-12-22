@@ -8,7 +8,7 @@ import app
 from scenes import SnakeGame
 from scenes.scene import Scene
 
-from scenes import SnakeGame
+from scenes import SnakeGame, TetrisGame
 
 # Ui elements
 from .button import Button
@@ -25,9 +25,9 @@ class MainMenu(Scene):
         ]
 
         self.uiElements[0].set_on_mouse_click(lambda: app.App.set_current_game(SnakeGame()))
-        self.uiElements[1].set_on_mouse_click(lambda: app.App.set_running(False))
+        self.uiElements[1].set_on_mouse_click(lambda: app.App.set_current_game(TetrisGame()))
         self.uiElements[2].set_on_mouse_click(lambda: print(3))
-        self.uiElements[3].set_on_mouse_click(lambda: print(4))
+        self.uiElements[3].set_on_mouse_click(lambda: app.App.set_running(False))
 
         screen_size = app.App.get_surface().get_size()
         self.mouseClickMapping = [[None for y in range(screen_size[0])] for x in range(screen_size[1])]

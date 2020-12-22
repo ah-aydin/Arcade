@@ -32,12 +32,20 @@ while App.running:
         if event.type == pg.QUIT:
             App.set_running(False)
         if event.type == pg.KEYDOWN:
-            if event.key == pg.K_q:
+            if event.key == pg.K_q: # Quit the game
                 App.set_running(False)
+            if event.key == pg.K_ESCAPE: # Return to main menu
+                # TODO add in a pause menu instead
+                App.set_current_game(MainMenu())
+            # Pass the key to the current scenes key event managment function
             App.get_current_game().key_event(event.key)
+
         if event.type == pg.MOUSEMOTION:
+            # Pass the mouse move event to the current scenes mouse event managment function
             App.get_current_game().mouse_move_event(pg.mouse.get_pos())
+
         if event.type == pg.MOUSEBUTTONDOWN:
+            # Pass the mouse click event to the current scenes mouse event management function
             App.get_current_game().mouse_click_event(pg.mouse.get_pos())
 
     # Update the timer
