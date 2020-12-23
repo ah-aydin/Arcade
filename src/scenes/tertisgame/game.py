@@ -29,13 +29,18 @@ class Game(Scene):
             self.current_tetromino.move_left()
             if self.collision():
                 self.current_tetromino.move_right()
-        if key == pg.K_DOWN:
+        if key == pg.K_RCTRL or key == pg.K_LCTRL or key == pg.K_z:
             self.current_tetromino.rotate_anticlockwise()
             if self.collision():
+                # Check if it can rotate by moving left and right
+                if not self.rotate_plus_movement_check():
+                    return
                 self.current_tetromino.rotate_clockwise()
-        if key == pg.K_UP:
+        if key == pg.K_UP or key == pg.K_x:
             self.current_tetromino.rotate_clockwise()
             if self.collision():
+                if not self.rotate_plus_movement_check():
+                    return
                 self.current_tetromino.rotate_anticlockwise()
 
     def update(self):
@@ -60,6 +65,37 @@ class Game(Scene):
         self.current_tetromino = Tetromino(rnd.choice(SHAPES))
 
     # Collision checkers
+    # Checks if the tetromino can be positioned elsewhere by moving it arround the area left and right
+    def rotate_plus_movement_check(self):
+        self.current_tetromino.move_right()
+        if self.collision():
+            self.current_tetromino.move_left()
+        else:
+            return False
+        self.current_tetromino.move_right()
+        self.current_tetromino.move_right()
+        if self.collision():
+            self.current_tetromino.move_left()
+            self.current_tetromino.move_left()
+        else:
+            return False
+        
+        self.current_tetromino.move_left()
+        if self.collision():
+            self.current_tetromino.move_right()
+        else:
+            return False
+        self.current_tetromino.move_left()
+        self.current_tetromino.move_left()
+        if self.collision():
+            self.current_tetromino.move_right()
+            self.current_tetromino.move_right()
+        else:
+            return False
+        
+        return True
+
+    # Checks if tetromino is landed
     def landed(self):
         for block in self.current_tetromino.blocks:
             # Check if there is a piece under it

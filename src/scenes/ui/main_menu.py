@@ -39,7 +39,8 @@ class MainMenu(Scene):
                 xpos, ypos = elem.pos
                 for x in range(elem.size[0]):
                     for y in range(elem.size[1]):
-                        self.mouseClickMapping[ypos + y][xpos + x] = elem
+                        if ypos + y < len(self.mouseClickMapping) and xpos + x < len(self.mouseClickMapping[0]) and ypos + y >= 0 and xpos + x >= 0:
+                            self.mouseClickMapping[ypos + y][xpos + x] = elem
     
     def key_event(self, key):
         pass
