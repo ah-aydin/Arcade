@@ -82,6 +82,31 @@ class PlayArea():
         )
     
     def add_to_grid(self, tetromino):
+        # Add the tetromino to the grid
         for block in tetromino.blocks:
             pos = (tetromino.pos[0] + block.offset[0], tetromino.pos[1] + block.offset[1])
+            # Game over
+            if pos[1] == -1:
+                return -1
             self.grid[pos[1]][pos[0]] = tetromino.color
+        
+        # Check if there are full rows, and return how many are there
+        full_row_count = 0
+        for row in range(self.dimention[1]):
+            is_full = True
+            for col in range(self.dimention[0]):
+                # If it is not full get to the next row
+                if self.grid[row][col] == (0, 0, 0):
+                    is_full = False
+                    break
+            # If there is a full row, remove it and push all the rows on top of it down
+            # Go bottom-up
+            if is_full:
+                full_row_count += 1
+                for r in range(row, 0, -1):
+                    for c in range(self.dimention[0]):
+                        self.grid[r][c] = self.grid[r - 1][c]
+                # If there is a full row the top row will be empty no matter what
+                for c in range(self.dimention[0]):
+                    self.grid[0][c] = (0, 0, 0)
+        return full_row_count

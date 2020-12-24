@@ -25,7 +25,7 @@ class MainMenu(Scene):
         ]
 
         self.uiElements[0].set_on_mouse_click(lambda: app.App.set_current_game(SnakeGame()))
-        self.uiElements[1].set_on_mouse_click(lambda: app.App.set_current_game(TetrisGame()))
+        self.uiElements[1].set_on_mouse_click(lambda: app.App.set_current_game(TetrisGame(0)))
         self.uiElements[2].set_on_mouse_click(lambda: print(3))
         self.uiElements[3].set_on_mouse_click(lambda: app.App.set_running(False))
 

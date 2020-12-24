@@ -3,6 +3,9 @@ class Scene:
     def __init__(self):
         pass
     
+    def key_up_event(self, key):
+        pass
+
     def key_event(self, key):
         pass
 

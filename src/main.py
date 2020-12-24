@@ -39,6 +39,8 @@ while App.running:
                 App.set_current_game(MainMenu())
             # Pass the key to the current scenes key event managment function
             App.get_current_game().key_event(event.key)
+        if event.type == pg.KEYUP:
+            App.get_current_game().key_up_event(event.key)
 
         if event.type == pg.MOUSEMOTION:
             # Pass the mouse move event to the current scenes mouse event managment function
@@ -65,5 +67,6 @@ while App.running:
 
         # Update the display
         pg.display.update()
-
+        
+App.set_current_game(None)
 pg.quit()
