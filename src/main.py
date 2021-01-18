@@ -28,6 +28,7 @@ App.set_surface(pg.display.set_mode(flags=pg.FULLSCREEN))
 App.set_current_game(MainMenu())
 
 while App.running:
+    # Handle events
     for event in pg.event.get():
         if event.type == pg.QUIT:
             App.set_running(False)
@@ -54,7 +55,7 @@ while App.running:
     CURRENT_FRAME = time.time()
     TIMER += CURRENT_FRAME - LAST_FRAME
     LAST_FRAME = CURRENT_FRAME
-
+    
     # Render at the given FPS
     if TIMER >= ONE_FRAME_IN_SECONDS:
         TIMER -= ONE_FRAME_IN_SECONDS

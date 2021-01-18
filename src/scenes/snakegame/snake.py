@@ -99,11 +99,16 @@ class Snake():
     def set_speed(self, speed):
         self.speed = speed
 
-    def move(self):
+    def move(self): 
+        """
+        0 = not moved
+        1 = moved
+        2 = game over
+        """
         # Only move if it is the move frame
         self.frame += 1
         if self.frame != self.speed:
-            return
+            return 0
         # Reset the frame counter
         self.frame = 0
 
@@ -112,8 +117,10 @@ class Snake():
         for i in range(1, len(self.parts)):
             # TODO Instead of ending the program return to the main menu
             if self.head.pos == self.parts[i].pos:
-                app.App.set_running(False)
+                return 2
             self.parts[i].move()
+        
+        return 1
     
     def render(self):
         for part in self.parts:
