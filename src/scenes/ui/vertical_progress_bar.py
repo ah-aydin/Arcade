@@ -7,15 +7,25 @@ import pygame as pg
 from .widget import Widget
 
 class VerticalProgressBar(Widget):
+    """
+    A vertical progress bar
+    pos = position
+    size = dimentions of the element
+    color = default color
+    blank_color = color displayed for the unfilled parts of the element
+    progress_count = how many "cells" the progress bar has
+    starting_progress = the starting progress
+    up_to_down = set's the direction of the progress bar
+    """
     def __init__(
         self,
         pos: (int, int) = (0, 0),
         size: (int, int) = (0, 0),
         color: (int, int, int) = (0, 255, 0),
         blank_color: (int, int, int) = (0, 0, 0),
-        progress_count = 0,
-        starting_progress = 0,
-        up_to_down = False
+        progress_count : int = 0,
+        starting_progress : int = 0,
+        up_to_down : bool = False
     ):
         super(VerticalProgressBar, self).__init__(pos, size, color)
         self.blank_color = blank_color
@@ -28,11 +38,18 @@ class VerticalProgressBar(Widget):
         self.progress_size = size[1] // progress_count
     
     def set_progress(self, progress):
+        """
+        Set the current progress
+        """
+        # Make sure that the given value is within the limits of the object
         if progress < 0 or progress >= self.progress_count:
             return
         self.progress = progress
     
     def self_render(self):
+        """
+        Renders the object
+        """
         if self.up_to_down:
             # Draw full part
             pg.draw.rect(

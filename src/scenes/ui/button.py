@@ -7,6 +7,9 @@ import app
 from .widget import Clickable
 
 class Button(Clickable):
+    """
+    A button widget that is clickable
+    """
     def __init__(
         self,
         pos: (int, int) = (0, 0),

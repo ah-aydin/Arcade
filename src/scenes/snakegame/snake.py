@@ -9,13 +9,23 @@ import app
 from .game_variables import GameVariables as gv
 
 class Food():
-
-    def __init__(self, color, size):
+    """
+    This class represents the foods that the snake can collect on the play area
+    color = the color of the food
+    size = the size in pixels of the food
+    """
+    def __init__(self,
+        color : (int, int, int), 
+        size : int
+    ):
         self.pos = (0, 0)
         self.size = size
         self.color = color
     
     def render(self):
+        """
+        Renders the food
+        """
         pg.draw.rect(
             app.App.get_surface(),  # surface
             self.color,         # color
@@ -28,8 +38,21 @@ class Food():
         )
 
 class Part():
-
-    def __init__(self, pos, size, direction, color, snake):
+    """
+    A block that represents a part of the snake.
+    pos = the initial position of the part
+    size = the size in pixels of the part
+    direction = the initial move direction of the part
+    color = the color of the part
+    snake = reference to the snake that it belongs to
+    """
+    def __init__(self,
+        pos : (int, int), 
+        size : (int), 
+        direction, 
+        color : (int, int, int), 
+        snake
+        ):
         self.pos = pos
         self.size = size
         self.color = color
@@ -37,9 +60,15 @@ class Part():
         self.snake_reference = snake
 
     def set_direction(self, direction):
+        """
+        Changes the move direction of the snake
+        """
         self.direction = direction
 
     def move(self):
+        """
+        Moves the part to according to its current direction
+        """
         # Move the part according to its direction
         if self.direction == gv.UP:
             self.pos = (self.pos[0], self.pos[1] - 1)
@@ -60,6 +89,9 @@ class Part():
                 del self.snake_reference.turnpoints[self.pos]
 
     def render(self):
+        """
+        Renders the part
+        """
         pg.draw.rect(
             app.App.get_surface(),  # surface
             self.color,         # color
@@ -72,9 +104,22 @@ class Part():
         )
 
 class Snake():
-
-    def __init__(self, length, start_pos, size, color, speed):
-        # Create the parts of the snake
+    """
+        Creates a snake object
+        length = starting length of the snake
+        start_pos = starting position of the snake
+        size = size of one block of the snake in pixels
+        color = color of the snake
+        speed = number of frames when a move command will be executed
+    """
+    def __init__(self, 
+        length : int, 
+        start_pos : (int, int), 
+        size : int, 
+        color : (int, int, int), 
+        speed : int
+    ):
+        # Create the parts of the snake given the values in the constructor
         self.parts = []
         startx = start_pos[0]
         starty = start_pos[1]
@@ -87,6 +132,7 @@ class Snake():
         self.head = self.parts[0]
         self.tail = self.parts[len(self.parts) - 1]
 
+        # Create other local variables to be used in the class
         self.size = size
         self.direction = gv.RIGHT
         self.color = color
@@ -94,6 +140,8 @@ class Snake():
         self.speed = speed
         self.frame = 0
 
+        # Hash-map to keep track of the points where the snake will have to
+        # turn it's parts
         self.turnpoints = {}
     
     def set_speed(self, speed):
@@ -101,6 +149,7 @@ class Snake():
 
     def move(self): 
         """
+        Moves the snake
         0 = not moved
         1 = moved
         2 = game over
@@ -123,19 +172,38 @@ class Snake():
         return 1
     
     def render(self):
+        """
+        Renders the snake on the screen
+        """
+        # Render each part of the snake
         for part in self.parts:
             part.render()
     
     def set_direction(self, direction):
+        """
+        Change the direction to witch the snake is moving
+        """
         self.direction = direction
-        self.turnpoints[self.parts[0].pos] = direction # Mark this head of the snake as a turn point
+        self.turnpoints[self.parts[0].pos] = direction # Mark the position of the head of the snake as a turn point
         self.parts[0].set_direction(direction)
     
     def add_part(self):
+        """
+        Add's a new part to the snake to it's tail
+        """
+        # Calculate the new position of the new part
         new_pos = (
             self.tail.pos[0] + gv.DIRECTION_STEPS[self.tail.direction][0], 
             self.tail.pos[1] + gv.DIRECTION_STEPS[self.tail.direction][1]
         )
+        # Create the new part
         new_part = Part(new_pos, self.size, self.tail.direction, self.color, self)
+        # Add it to the list of parts and set it as the tail of the snake
         self.parts.append(new_part)
         self.tail = new_part
+        # If the snake is as long as the total play area then the game is won
+        # Returns 1
+        if len(self.parts) == gv.PLAY_AREA_DIMENTION ** 2:
+            return 1
+        # Otherwise, return 0
+        return 0

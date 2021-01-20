@@ -7,6 +7,9 @@ import pygame as pg
 from .widget import Widget
 
 class HudText(Widget):
+    """
+    A simple widget to display text on the screen
+    """
     def __init__(
         self,
         pos: (int, int) = (0, 0),

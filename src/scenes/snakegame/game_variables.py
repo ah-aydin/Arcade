@@ -1,4 +1,7 @@
 class GameVariables():
+    """
+    Class to hold static varialbes that help define the game
+    """
     # Colors
     WHITE = (255, 255, 255)
     RED = (255, 0, 0)

@@ -1,5 +1,7 @@
 class Scene:
-
+    """
+    A class the provids a set of functions every game class should always have in posession
+    """
     def __init__(self):
         pass
     

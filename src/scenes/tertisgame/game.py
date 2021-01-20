@@ -16,21 +16,27 @@ from .game_variables import GameVariables as gv
 import scenes as s
 
 class Game(Scene):
-
+    """
+    The game class for the tetris game
+    """
     def __init__(self, start_level):
+        # Create all the objects that will be used in the game
+        # Create the play area
         self.pa = PlayArea()
+        # Create a tetromino
         self.current_tetromino = None
         self.get_next_tetromino()
 
+        # Create UI elements
         self.ui_elements = [
-            s.HudText(
+            s.HudText( # Displays the score
                 (20, 30),
                 (100, 100),
                 (255, 255, 255),
                 "Score: 0",
                 23
             ),
-            s.HudText(
+            s.HudText( # Displays current level
                 (20, 60),
                 (100, 100),
                 (255, 255, 255),
@@ -39,6 +45,7 @@ class Game(Scene):
             )
         ]
         
+        # Some local variables to keep track of the game
         self.frame_count = 0
         self.total_score = 0
         self.level = start_level
@@ -48,10 +55,17 @@ class Game(Scene):
         self.game_over = False
     
     def key_up_event(self, key):
+        """
+        Called when a key_up_event is triggered
+        """
+        # Stop dropping faster if the down arrow is released
         if key == pg.K_DOWN:
             self.fast_drop = False
 
     def key_event(self, key):
+        """
+        Called when a key_event is triggered
+        """
         # Left-right movement events
         if key == pg.K_RIGHT:
             self.current_tetromino.move_right()
@@ -78,31 +92,46 @@ class Game(Scene):
                     return
                 self.current_tetromino.rotate_anticlockwise()
         
-        # Drop event
+        # Drop faster if the down arrow is pressed
         if key == pg.K_DOWN:
             self.fast_drop = True
 
     def update(self):
+        """
+        Called every frame
+        """
+        # If the game is not over
         if not self.game_over:
+            # Check if it is time to move the tetromino down
             self.frame_count += 1
             f = gv.LEVEL_FPS[min(self.level, len(gv.LEVEL_FPS) - 1)]
             if self.fast_drop:
                 f = 2
+            # If it is time, move it down
             if self.frame_count >= f:
                 self.frame_count = 0
                 self.current_tetromino.move_down()
                 if self.landed():
                     self.get_next_tetromino()
 
+        # Render the game
         self.render()
 
     def render(self):
+        """
+        Renders the game
+        """
+        # Render all the game objects
         self.pa.render()
         self.current_tetromino.render()
+        # Render the UI
         for ui_element in self.ui_elements:
             ui_element.render()
     
     def calculate_score(self, rows_filled):
+        """
+        Calculates the score according to the numberof rows that are filled
+        """
         if rows_filled == 0:
             return
         # First calculate the total score
@@ -112,21 +141,28 @@ class Game(Scene):
         # Then check if the player has advanced to the next level
         self.rows_filled_count += rows_filled
         if self.rows_filled_count >= min(self.start_level * 10 + 10, max(100, self.start_level * 10 - 50)):
+            # If it has advanced, bump up the level by 1
             self.level += 1
             self.ui_elements[1].set_text("Level: " + str(self.level))
             self.rows_filled_count = 0
         
+        # Update the score text
         self.ui_elements[0].set_text("Score: " + str(self.total_score))
 
     def get_next_tetromino(self):
+        """
+        Create the next tetromino
+        """
         # TODO Add in a second one to show the next tetromino in order
         # Delete the current tetromino
         del self.current_tetromino
         # Create the new tetromino
         self.current_tetromino = Tetromino(rnd.choice(SHAPES))
 
-    # The function that gets called when the game ends
     def end(self):
+        """
+        The function that gets called when the game ends
+        """
         # TODO Make it more complete
         self.game_over = True
         self.ui_elements.append(
@@ -140,8 +176,10 @@ class Game(Scene):
         )
     
     # Collision checkers
-    # Checks if the tetromino can be positioned elsewhere by moving it arround the area left and right
     def rotate_plus_movement_check(self):
+        """
+        Checks if the tetromino can be positioned elsewhere by moving it arround the area left and right
+        """
         self.current_tetromino.move_right()
         if self.collision():
             self.current_tetromino.move_left()
@@ -170,8 +208,10 @@ class Game(Scene):
         
         return True
 
-    # Checks if tetromino is landed
     def landed(self):
+        """
+        Checks if tetromino is landed
+        """
         # Also calculate the ammount of score that has been gained
         rows_filled = 0
         landed = False
@@ -200,8 +240,10 @@ class Game(Scene):
 
         return landed
 
-    # Checks if the tetromino is out of bounds
     def out_of_bounds(self):
+        """
+        Checks if the tetromino is out of bounds
+        """
         for block in self.current_tetromino.blocks:
             # Check if it is out of bounds or not
             pos = (self.current_tetromino.pos[0] + block.offset[0], self.current_tetromino.pos[1] + block.offset[1])
@@ -209,8 +251,10 @@ class Game(Scene):
                 return True
         return False
 
-    # Checks if the tetromiino is colliding with the allready placed tetrominos
     def tetromino_collision(self):
+        """
+        Checks if the tetromiino is colliding with the allready placed tetrominos
+        """
         for block in self.current_tetromino.blocks:
             # Check if it is colliding with other tetrominos that are allready placed
             pos = (self.current_tetromino.pos[0] + block.offset[0], self.current_tetromino.pos[1] + block.offset[1])
@@ -218,8 +262,10 @@ class Game(Scene):
                 return True
         return False
 
-    # Checks for collisions that the current tetromino has with the edges and the other tetrominos
     def collision(self):
+        """
+        Checks for collisions that the current tetromino has with the edges and the other tetrominos
+        """
         if self.out_of_bounds():
             return True
         if self.tetromino_collision():
