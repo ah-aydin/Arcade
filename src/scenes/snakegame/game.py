@@ -17,15 +17,16 @@ import scenes as s
 class Game(Scene):
     """
     The game class for the snake game
+    starting_level = The starting level of the game
     """
-    def __init__(self):
+    def __init__(self, starting_level):
         # TODO add ability to choose the starting level
         # Create some local variables to keep track of the game
         self.steps_made = 0
         self.score = 0
 
-        self.base_level = 2
-        self.level = 2
+        self.base_level = starting_level
+        self.level = starting_level
         self.times_scored = 0
 
         self.game_over = False
@@ -53,7 +54,7 @@ class Game(Scene):
                 (20, 60),
                 (100, 100),
                 (255, 255, 255),
-                "Level: 0",
+                "Level: " + str(starting_level),
                 23
             ),
             s.VerticalProgressBar( # Displays how much score will be earn if the food is eaten at that point in time

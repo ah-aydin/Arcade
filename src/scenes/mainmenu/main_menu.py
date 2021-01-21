@@ -5,14 +5,13 @@ import pygame as pg
 import app
 
 # Scene
-from scenes import SnakeGame
 from scenes.scene import Scene
 
-from scenes import SnakeGame, TetrisGame
+from scenes import SnakeMenu, TetrisGame
 
 # Ui elements
-from .button import Button
-from .widget import Clickable
+from scenes import Button
+from scenes import Clickable
 
 class MainMenu(Scene):
     """
@@ -22,14 +21,14 @@ class MainMenu(Scene):
         super(MainMenu, self).__init__()
         # Create the buttons for the menu
         self.uiElements = [
-            Button((100, 100), (300, 150), (255, 0, 0)),
-            Button((500, 100), (300, 150), (255, 0, 0)),
-            Button((900, 100), (300, 150), (255, 0, 0)),
-            Button((100, 400), (300, 150), (255, 0, 0)),
+            Button((100, 100), (300, 150), (255, 0, 0), text="Snake", font_size=30),
+            Button((500, 100), (300, 150), (255, 0, 0), text="Tetris", font_size=30),
+            Button((900, 100), (300, 150), (255, 0, 0), text="Nothing here at the moment", font_size=30),
+            Button((100, 400), (300, 150), (255, 0, 0), text="Exit", font_size=30),
         ]
 
         # Set the buttons functionality
-        self.uiElements[0].set_on_mouse_click(lambda: app.App.set_current_game(SnakeGame())) # This opens the snake game
+        self.uiElements[0].set_on_mouse_click(lambda: app.App.set_current_game(SnakeMenu())) # This opens the snake game menu
         self.uiElements[1].set_on_mouse_click(lambda: app.App.set_current_game(TetrisGame(0))) # This opens the tetris game
         self.uiElements[2].set_on_mouse_click(lambda: print(3)) # This prints 3
         self.uiElements[3].set_on_mouse_click(lambda: app.App.set_running(False)) # This exits the application

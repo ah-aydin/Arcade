@@ -6,16 +6,16 @@ import pygame as pg
 
 from .widget import Widget
 
-class VerticalProgressBar(Widget):
+class HorizontalProgressBar(Widget):
     """
-    A vertical progress bar
+    A horizontal progress bar
     pos = position
     size = dimentions of the element
     color = default color
     blank_color = color displayed for the unfilled parts of the element
     progress_count = how many "cells" the progress bar has
     starting_progress = the starting progress
-    up_to_down = set's the direction of the progress bar
+    left_to_right = set's the direction of the progress bar
     """
     def __init__(
         self,
@@ -25,16 +25,16 @@ class VerticalProgressBar(Widget):
         blank_color: (int, int, int) = (0, 0, 0),
         progress_count : int = 0,
         starting_progress : int = 0,
-        up_to_down : bool = False
+        left_to_right : bool = False
     ):
-        super(VerticalProgressBar, self).__init__(pos, size, color)
+        super(HorizontalProgressBar, self).__init__(pos, size, color)
         self.blank_color = blank_color
         self.progress_count = progress_count
-        self.up_to_down = up_to_down
+        self.left_to_right = left_to_right
         self.progress = starting_progress
 
         # Calculate size of 1 progress
-        self.progress_size = size[1] // progress_count
+        self.progress_size = size[0] // progress_count
     
     def set_progress(self, progress):
         """
@@ -49,7 +49,7 @@ class VerticalProgressBar(Widget):
         """
         Renders the object
         """
-        if self.up_to_down:
+        if self.left_to_right:
             # Draw full part
             pg.draw.rect(
                 app.App.get_surface(),  # surface
@@ -57,8 +57,9 @@ class VerticalProgressBar(Widget):
                 (                   # rect
                     self.pos[0],
                     self.pos[1],
-                    self.size[0],
-                    self.progress_size * (self.progress)
+                    self.progress_size * (self.progress),
+                    self.size[1]
+                    
                 )
             )
             # Draw non-full part
@@ -66,10 +67,11 @@ class VerticalProgressBar(Widget):
                 app.App.get_surface(),  # surface
                 self.blank_color,         # color
                 (                   # rect
-                    self.pos[0],
-                    self.pos[1] + self.progress * self.progress_size,
-                    self.size[0],
-                    self.progress_size * (self.progress_count - self.progress)
+                    self.pos[0] + self.progress * self.progress_size,
+                    self.pos[1],
+                    self.progress_size * (self.progress_count - self.progress),
+                    self.size[1]
+                    
                 )
             )
         else:
@@ -78,10 +80,10 @@ class VerticalProgressBar(Widget):
                 app.App.get_surface(),  # surface
                 self.color,         # color
                 (                   # rect
-                    self.pos[0],
-                    self.pos[1] + (self.progress_count - self.progress) * self.progress_size,
-                    self.size[0],
-                    self.progress_size * (self.progress)
+                    self.pos[0] + (self.progress_count - self.progress) * self.progress_size,
+                    self.pos[1],
+                    self.progress_size * (self.progress),
+                    self.size[1]
                 )
             )
             # Draw non-full part
@@ -91,7 +93,7 @@ class VerticalProgressBar(Widget):
                 (                   # rect
                     self.pos[0],
                     self.pos[1],
-                    self.size[0],
-                    self.progress_size * (self.progress_count - self.progress)
+                    self.progress_size * (self.progress_count - self.progress),
+                    self.size[1]
                 )
             )

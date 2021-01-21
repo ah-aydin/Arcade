@@ -1,4 +1,5 @@
 from .snakegame import *
 from .tertisgame import *
-from .ui import MainMenu, HudText, VerticalProgressBar
+from .ui import *
 from .scene import Scene
+from .mainmenu import MainMenu
