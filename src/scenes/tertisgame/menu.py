@@ -73,7 +73,7 @@ class Menu(Scene):
                 text = "START",
                 font_size = 50,
             ),
-            s.HudText( # Just displays the text "SNAKE" on the screen
+            s.HudText( # Just displays the text "TETRIS" on the screen
                 (
                     screen_size[0] // 2 - button_size[0] * 2,
                     screen_size[1] // 2 - button_size[1] * 2 - 40
@@ -83,7 +83,7 @@ class Menu(Scene):
                     button_size[1]
                 ),
                 (255, 0, 0),
-                text = "SNAKE",
+                text = "TETRIS",
                 font_size = 200,
                 text_centered = True
             )

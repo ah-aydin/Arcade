@@ -7,7 +7,7 @@ import app
 # Scene
 from scenes.scene import Scene
 
-from scenes import SnakeMenu, TetrisGame
+from scenes import SnakeMenu, TetrisMenu
 
 # Ui elements
 from scenes import Button
@@ -29,7 +29,7 @@ class MainMenu(Scene):
 
         # Set the buttons functionality
         self.uiElements[0].set_on_mouse_click(lambda: app.App.set_current_game(SnakeMenu())) # This opens the snake game menu
-        self.uiElements[1].set_on_mouse_click(lambda: app.App.set_current_game(TetrisGame(0))) # This opens the tetris game
+        self.uiElements[1].set_on_mouse_click(lambda: app.App.set_current_game(TetrisMenu())) # This opens the tetris game
         self.uiElements[2].set_on_mouse_click(lambda: print(3)) # This prints 3
         self.uiElements[3].set_on_mouse_click(lambda: app.App.set_running(False)) # This exits the application
 

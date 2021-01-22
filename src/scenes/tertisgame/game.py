@@ -40,7 +40,7 @@ class Game(Scene):
                 (20, 60),
                 (100, 100),
                 (255, 255, 255),
-                "Level: 0",
+                "Level: " + str(start_level),
                 23
             )
         ]

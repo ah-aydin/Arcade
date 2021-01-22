@@ -23,8 +23,7 @@ BLACK = (0, 0, 0)
 # Create the render target
 App.set_surface(pg.display.set_mode(flags=pg.FULLSCREEN))
 
-# Create the game
-#game = SnakeGame()
+# Create and mark the MainMenu as the current game
 App.set_current_game(MainMenu())
 
 while App.running:
