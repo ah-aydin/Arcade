@@ -20,7 +20,8 @@ class Game(Scene):
     starting_level = The starting level of the game
     """
     def __init__(self, starting_level):
-        # TODO add ability to choose the starting level
+        screen_size = app.App.get_surface().get_size()
+
         # Create some local variables to keep track of the game
         self.steps_made = 0
         self.score = 0
@@ -42,7 +43,7 @@ class Game(Scene):
         self.food = Food(gv.PURPLE, gv.TILE_WIDTH)
 
         # Create ui elements
-        self.ui_elements = [
+        self.uiElements = [
             s.HudText( # Displays the current score
                 (20, 30),
                 (100, 100),
@@ -78,7 +79,23 @@ class Game(Scene):
 
         # Summon a food
         self.summon_food()
+
+        # Map the mouse click mapping for the clickable objects
+        self.mouseClickMapping = [[None for y in range(screen_size[0])] for x in range(screen_size[1])]
+        self.generateMouseClickMapping()
     
+    def generateMouseClickMapping(self):
+        """
+        Generates the moue click mapping
+        """
+        for elem in self.uiElements:
+            if issubclass(type(elem), s.Clickable):
+                xpos, ypos = elem.pos
+                for x in range(elem.size[0]):
+                    for y in range(elem.size[1]):
+                        if ypos + y < len(self.mouseClickMapping) and xpos + x < len(self.mouseClickMapping[0]) and ypos + y >= 0 and xpos + x >= 0:
+                            self.mouseClickMapping[ypos + y][xpos + x] = elem
+
     def key_event(self, key):
         """
         Handle the key events
@@ -93,6 +110,14 @@ class Game(Scene):
         if key == pg.K_LEFT:
             self.snake.set_direction(gv.LEFT)
 
+    def mouse_click_event(self, pos):
+        """
+        Called when there is a mouse click event
+        """
+        elem = self.mouseClickMapping[pos[1]][pos[0]]
+        if elem != None:
+            elem.on_mouse_click()
+
     def update(self):
         """
         Function that will be called every frame of the game
@@ -103,10 +128,10 @@ class Game(Scene):
             s = self.snake.move()
             if s == 1: # If the snake has moved
                 self.steps_made += 1
-                self.ui_elements[2].set_progress(max(0, gv.STEPS_LIMIT - self.steps_made))
+                self.uiElements[2].set_progress(max(0, gv.STEPS_LIMIT - self.steps_made))
             if s == 2: # The snake has run over one of it's own parts
                 # The game is over
-                self.game_over = True
+                self.end()
                 return
             self.update_grid()
 
@@ -119,7 +144,7 @@ class Game(Scene):
             # formula = base level * 20 + 100 - 2 * min(steps made, 40) * (level + 1)
             self.score += self.base_level * 20 + (gv.DEFAULT_SCORE - gv.PENALTY_PER_STEP * min(self.steps_made, gv.STEPS_LIMIT)) * (self.level + 1)
             # Update the score text
-            self.ui_elements[0].set_text("Score: " + str(self.score))
+            self.uiElements[0].set_text("Score: " + str(self.score))
             # Reset the number of steps made
             self.steps_made = 0
 
@@ -132,7 +157,7 @@ class Game(Scene):
                 if self.level == len(gv.LEVEL_FPS):
                     self.level -= 1
                 self.snake.set_speed(gv.LEVEL_FPS[self.level])
-                self.ui_elements[1].set_text("Level: " + str(self.level))
+                self.uiElements[1].set_text("Level: " + str(self.level))
 
             # Summon new food and add a part to the snake
             self.summon_food()
@@ -147,7 +172,7 @@ class Game(Scene):
         self.snake.render()
         self.food.render()
         # Render every UI element
-        for ui_element in self.ui_elements:
+        for ui_element in self.uiElements:
             ui_element.render()
 
     def update_grid(self):
@@ -167,3 +192,67 @@ class Game(Scene):
         """
         new_pos = rnd.choice(list(self.grid.keys()))
         self.food.pos = new_pos
+
+    def end(self):
+        """
+        The function that gets called when the game ends
+        """
+        # Set the game as over
+        self.game_over = True
+
+        # Add in the UI elements for the game over state
+        screen_size = app.App.get_surface().get_size()
+        button_size = (
+            screen_size[1] // 10 * 2,
+            screen_size[1] // 10
+        )
+
+        self.uiElements += [
+            s.Button( # This is just to have a back drop behind all the newly added ui elements
+                (
+                    int(screen_size[0] // 2 - screen_size[0] * 0.6 // 2),
+                    int(screen_size[1] // 2 - screen_size[1] * 0.8 // 2)
+                ),
+                (
+                    int(screen_size[0] * 0.6),
+                    int(screen_size[1] * 0.8)
+                ),
+                (110, 110, 110)
+            ),
+            s.HudText( # Displays "GAME OVER"
+                (screen_size[0] // 2, screen_size[1] // 4),
+                (0, 0),
+                (255, 0, 0),
+                "GAME OVER",
+                150,
+                text_centered = True
+            ),
+            s.Button( # Button that will return to the main menu
+                (
+                    screen_size[0] // 2 - button_size[0] - 40,
+                    (screen_size[1] + button_size[1]) // 2
+                ),
+                button_size,
+                (255, 0, 0),
+                text = "Main Menu",
+                text_color = (255, 255, 255),
+                font_size = 35
+            ),
+            s.Button( # Button that will return to the level selection menu
+                (
+                    screen_size[0] // 2 + 40,
+                    (screen_size[1] + button_size[1]) // 2
+                ),
+                button_size,
+                (255, 0, 0),
+                text = "Play Again",
+                text_color = (255, 255, 255),
+                font_size = 35
+            )
+        ]
+
+        self.uiElements[-2].set_on_mouse_click(lambda: app.App.set_current_game(s.MainMenu()))
+        self.uiElements[-1].set_on_mouse_click(lambda: app.App.set_current_game(s.SnakeMenu()))
+        # Since some buttons are added to the screen
+        # Generate the mouse click mapping
+        self.generateMouseClickMapping()
