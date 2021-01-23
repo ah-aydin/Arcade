@@ -25,9 +25,11 @@ class Game(Scene):
         # Create all the objects that will be used in the game
         # Create the play area
         self.pa = PlayArea()
-        # Create a tetromino
-        self.current_tetromino = None
-        self.get_next_tetromino()
+        # Create 2 tetrominos
+        self.current_tetromino = Tetromino(rnd.choice(SHAPES))
+        self.next_tetromino_template = rnd.choice(SHAPES)
+        self.next_tetromino_preview = Tetromino(self.next_tetromino_template)
+        self.next_tetromino_preview.pos = (12, 4) # Move the next tetromino to the right side of the play area to display it
 
         # Create UI elements
         self.uiElements = [
@@ -150,6 +152,7 @@ class Game(Scene):
         # Render all the game objects
         self.pa.render()
         self.current_tetromino.render()
+        self.next_tetromino_preview.render()
         # Render the UI
         for ui_element in self.uiElements:
             ui_element.render()
@@ -179,11 +182,14 @@ class Game(Scene):
         """
         Create the next tetromino
         """
-        # TODO Add in a second one to show the next tetromino in order
-        # Delete the current tetromino
+        # Delete the current tetromino and create a new one from the next one's template
         del self.current_tetromino
-        # Create the new tetromino
-        self.current_tetromino = Tetromino(rnd.choice(SHAPES))
+        self.current_tetromino = Tetromino(self.next_tetromino_template)
+        # Create the next tetromino template and preview
+        self.next_tetromino_template = rnd.choice(SHAPES)
+        del self.next_tetromino_preview
+        self.next_tetromino_preview = Tetromino(self.next_tetromino_template)
+        self.next_tetromino_preview.pos = (12, 4)
 
     def end(self):
         """
