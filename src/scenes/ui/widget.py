@@ -18,17 +18,17 @@ class Widget:
         self.size = size
         self.color = color
 
-        self.children = []
+        self._children = []
     
     def render(self):
         """
         Renders the object and it's childred
         """
-        self.self_render()
-        for child in self.children:
+        self._self_render()
+        for child in self._children:
             child.render()
     
-    def self_render(self):
+    def _self_render(self):
         """
         Function to render itself
         """
@@ -46,18 +46,18 @@ class Clickable(Widget):
     ):
         super(Clickable, self).__init__(pos, size, color)
 
-        self.mouse_click_func = None
+        self._mouse_click_func = None
 
     def set_on_mouse_click(self, func):
         """
         Set the functino to be called when the object is clicked
         """
-        self.mouse_click_func = func
+        self._mouse_click_func = func
 
     def on_mouse_click(self):
         """
         Called when the object is clicked
         """
-        if self.mouse_click_func is None:
+        if self._mouse_click_func is None:
             return
-        self.mouse_click_func()
+        self._mouse_click_func()

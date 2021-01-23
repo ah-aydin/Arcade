@@ -4,7 +4,7 @@ import pygame as pg
 
 # App modules
 import app
-from scenes.scene import Scene
+from scenes.scene import BaseGame
 
 # Game modules
 from .playarea import PlayArea
@@ -14,36 +14,36 @@ from .game_variables import GameVariables as gv
 # UI module
 import scenes as s
 
-class Game(Scene):
+class Game(BaseGame):
     """
-    The game class for the snake game
+    The game class for the _snake game
     starting_level = The starting level of the game
     """
     def __init__(self, starting_level):
-        screen_size = app.App.get_surface().get_size()
+        super(Game, self).__init__()
 
         # Create some local variables to keep track of the game
-        self.steps_made = 0
-        self.score = 0
+        self._steps_made = 0
+        self._score = 0
 
-        self.base_level = starting_level
-        self.level = starting_level
-        self.times_scored = 0
+        self._base_level = starting_level
+        self._level = starting_level
+        self._times_scored = 0
 
-        self.game_over = False
+        self._game_over = False
 
         # Calculate the width of one tile (cell) of the 2D square matrix play area
         gv.TILE_WIDTH = (app.App.get_surface().get_height() - 200) // gv.PLAY_AREA_DIMENTION
 
         # Create the play area
-        self.pa = PlayArea(gv.PLAY_AREA_DIMENTION, gv.TILE_WIDTH)
-        # Create the snake
-        self.snake = Snake(5, (gv.PLAY_AREA_DIMENTION / 2, gv.PLAY_AREA_DIMENTION / 2), gv.TILE_WIDTH, gv.BLUE, gv.LEVEL_FPS[self.level])
-        # Create the first food
-        self.food = Food(gv.PURPLE, gv.TILE_WIDTH)
+        self._pa = PlayArea(gv.PLAY_AREA_DIMENTION, gv.TILE_WIDTH)
+        # Create the _snake
+        self._snake = Snake(5, (gv.PLAY_AREA_DIMENTION / 2, gv.PLAY_AREA_DIMENTION / 2), gv.TILE_WIDTH, gv.BLUE, gv.LEVEL_FPS[self._level])
+        # Create the first _food
+        self._food = Food(gv.PURPLE, gv.TILE_WIDTH)
 
         # Create ui elements
-        self.uiElements = [
+        self._uiElements += [
             s.HudText( # Displays the current score
                 (20, 30),
                 (100, 100),
@@ -70,135 +70,114 @@ class Game(Scene):
         ]
 
         # Create an instance of the grid that is empty
-        self.default_grid = {}
+        self._default_grid = {}
         for x in range(gv.PLAY_AREA_DIMENTION):
             for y in range(gv.PLAY_AREA_DIMENTION):
-                self.default_grid[(x, y)] = 0
+                self._default_grid[(x, y)] = 0
         # This grid will keep track of the filled in spots in the play area
-        self.grid = self.default_grid.copy()
+        self._grid = self._default_grid.copy()
 
         # Summon a food
-        self.summon_food()
-
-        # Map the mouse click mapping for the clickable objects
-        self.mouseClickMapping = [[None for y in range(screen_size[0])] for x in range(screen_size[1])]
-        self.generateMouseClickMapping()
-    
-    def generateMouseClickMapping(self):
-        """
-        Generates the moue click mapping
-        """
-        for elem in self.uiElements:
-            if issubclass(type(elem), s.Clickable):
-                xpos, ypos = elem.pos
-                for x in range(elem.size[0]):
-                    for y in range(elem.size[1]):
-                        if ypos + y < len(self.mouseClickMapping) and xpos + x < len(self.mouseClickMapping[0]) and ypos + y >= 0 and xpos + x >= 0:
-                            self.mouseClickMapping[ypos + y][xpos + x] = elem
+        self._summon_food()
 
     def key_event(self, key):
         """
         Handle the key events
         """
+        if self._pause:
+            return
+        
         # Change the direction of the snake according to the input
         if key == pg.K_UP:
-            self.snake.set_direction(gv.UP)
+            self._snake.set_direction(gv.UP)
         if key == pg.K_DOWN:
-            self.snake.set_direction(gv.DOWN)
+            self._snake.set_direction(gv.DOWN)
         if key == pg.K_RIGHT:
-            self.snake.set_direction(gv.RIGHT)
+            self._snake.set_direction(gv.RIGHT)
         if key == pg.K_LEFT:
-            self.snake.set_direction(gv.LEFT)
-
-    def mouse_click_event(self, pos):
-        """
-        Called when there is a mouse click event
-        """
-        elem = self.mouseClickMapping[pos[1]][pos[0]]
-        if elem != None:
-            elem.on_mouse_click()
+            self._snake.set_direction(gv.LEFT)
 
     def update(self):
         """
         Function that will be called every frame of the game
         """
         # If the game is not over
-        if not self.game_over:
+        if not self._game_over and not self._pause:
             # Try moving the snake
-            s = self.snake.move()
+            s = self._snake.move()
             if s == 1: # If the snake has moved
-                self.steps_made += 1
-                self.uiElements[2].set_progress(max(0, gv.STEPS_LIMIT - self.steps_made))
+                self._steps_made += 1
+                self._uiElements[2].set_progress(max(0, gv.STEPS_LIMIT - self._steps_made))
             if s == 2: # The snake has run over one of it's own parts
                 # The game is over
-                self.end()
+                self._end()
                 return
             self.update_grid()
 
         # Render the game
         self.render()
 
-        # If the snake's head is located on the food
-        if self.snake.head.pos == self.food.pos:
-            # Calculate score
-            # formula = base level * 20 + 100 - 2 * min(steps made, 40) * (level + 1)
-            self.score += self.base_level * 20 + (gv.DEFAULT_SCORE - gv.PENALTY_PER_STEP * min(self.steps_made, gv.STEPS_LIMIT)) * (self.level + 1)
-            # Update the score text
-            self.uiElements[0].set_text("Score: " + str(self.score))
+        # If the _snake's head is located on the _food
+        if self._snake.head.pos == self._food.pos:
+            # Calculate _score
+            # formula = base _level * 20 + 100 - 2 * min(steps made, 40) * (_level + 1)
+            self._score += self._base_level * 20 + (gv.DEFAULT_SCORE - gv.PENALTY_PER_STEP * min(self._steps_made, gv.STEPS_LIMIT)) * (self._level + 1)
+            # Update the _score text
+            self._uiElements[0].set_text("Lcore: " + str(self._score))
             # Reset the number of steps made
-            self.steps_made = 0
+            self._steps_made = 0
 
-            # After every gv.JUMP_LEVEL_AFTER pickups, bump up the level
-            self.times_scored += 1
-            if self.times_scored >= gv.JUMP_LEVEL_AFTER:
-                self.times_scored = 0
-                self.level += 1
-                # Check if there is a next level
-                if self.level == len(gv.LEVEL_FPS):
-                    self.level -= 1
-                self.snake.set_speed(gv.LEVEL_FPS[self.level])
-                self.uiElements[1].set_text("Level: " + str(self.level))
+            # After every gv.JUMP_LEVEL_AFTER pickups, bump up the _level
+            self._times_scored += 1
+            if self._times_scored >= gv.JUMP_LEVEL_AFTER:
+                self._times_scored = 0
+                self._level += 1
+                # Check if there is a next _level
+                if self._level == len(gv.LEVEL_FPS):
+                    self._level -= 1
+                self._snake.set_speed(gv.LEVEL_FPS[self._level])
+                self._uiElements[1].set_text("Level: " + str(self._level))
 
-            # Summon new food and add a part to the snake
-            self.summon_food()
-            self.snake.add_part()
+            # Summon new _food and add a part to the _snake
+            self._summon_food()
+            self._snake.add_part()
     
     def render(self):
         """
         Renders the game
         """
         # Render every game element present
-        self.pa.render()
-        self.snake.render()
-        self.food.render()
+        self._pa.render()
+        self._snake.render()
+        self._food.render()
         # Render every UI element
-        for ui_element in self.uiElements:
+        for ui_element in self._uiElements:
             ui_element.render()
 
     def update_grid(self):
         """
-        Update the grid
+        Update the _grid
         """
-        self.grid = self.default_grid.copy()
-        for part in self.snake.parts:
+        self._grid = self._default_grid.copy()
+        for part in self._snake.parts:
             try:
-                del self.grid[part.pos]
+                del self._grid[part.pos]
             except:
                 pass
 
-    def summon_food(self):
+    def _summon_food(self):
         """
         Summon new food
         """
-        new_pos = rnd.choice(list(self.grid.keys()))
-        self.food.pos = new_pos
+        new_pos = rnd.choice(list(self._grid.keys()))
+        self._food.pos = new_pos
 
-    def end(self):
+    def _end(self):
         """
         The function that gets called when the game ends
         """
         # Set the game as over
-        self.game_over = True
+        self._game_over = True
 
         # Add in the UI elements for the game over state
         screen_size = app.App.get_surface().get_size()
@@ -207,7 +186,7 @@ class Game(Scene):
             screen_size[1] // 10
         )
 
-        self.uiElements += [
+        self._uiElements += [
             s.Button( # This is just to have a back drop behind all the newly added ui elements
                 (
                     int(screen_size[0] // 2 - screen_size[0] * 0.6 // 2),
@@ -251,8 +230,8 @@ class Game(Scene):
             )
         ]
 
-        self.uiElements[-2].set_on_mouse_click(lambda: app.App.set_current_game(s.MainMenu()))
-        self.uiElements[-1].set_on_mouse_click(lambda: app.App.set_current_game(s.SnakeMenu()))
+        self._uiElements[-2].set_on_mouse_click(lambda: app.App.set_current_scene(s.MainMenu()))
+        self._uiElements[-1].set_on_mouse_click(lambda: app.App.set_current_scene(s.SnakeMenu()))
         # Since some buttons are added to the screen
         # Generate the mouse click mapping
-        self.generateMouseClickMapping()
+        self._generateMouseClickMapping()

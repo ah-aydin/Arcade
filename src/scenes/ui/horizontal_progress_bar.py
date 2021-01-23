@@ -45,7 +45,7 @@ class HorizontalProgressBar(Widget):
             return
         self.progress = progress
     
-    def self_render(self):
+    def _self_render(self):
         """
         Renders the object
         """

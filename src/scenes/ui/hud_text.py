@@ -62,7 +62,7 @@ class HudText(Widget):
         if self.text_centered:
             self._calculate_centered_pos()
 
-    def self_render(self):
+    def _self_render(self):
         text_render = self.font.render(self.text, True, self.color)
         # If the text is not centered, render it at the top left corner of the widget
         if not self.text_centered:

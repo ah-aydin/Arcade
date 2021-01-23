@@ -31,10 +31,10 @@ class App():
     # current game/menu methods
     current_game = None
     @classmethod
-    def set_current_game(cls, game : ss.Scene):
+    def set_current_scene(cls, game : ss.Scene):
         del cls.current_game
         cls.current_game = game
     @classmethod
-    def get_current_game(cls):
+    def get_current_scene(cls):
         return cls.current_game
     ##################################################################

@@ -22,7 +22,6 @@ class PlayArea():
         # Calculate the render variables
         render_height = sheight
         self.tile_width = render_height // self.dimention[1]
-        render_width = self.tile_width * self.dimention[0]
         gv.TILE_WIDTH = self.tile_width
 
         # Calculate the render offset
@@ -31,16 +30,16 @@ class PlayArea():
             0
         )
 
-        self.top_left = gv.PLAY_AREA_TOP_LEFT
-        self.bottom_right = (
-            self.top_left[0] + self.dimention[0] * self.tile_width,
+        self._top_left = gv.PLAY_AREA_TOP_LEFT
+        self._bottom_right = (
+            self._top_left[0] + self.dimention[0] * self.tile_width,
             sheight
         )
 
         # Local variables created using the above calculations
-        self.play_area_width = self.tile_width * self.dimention[0]
+        self._play_area_width = self.tile_width * self.dimention[0]
         play_area_height = self.tile_width * self.dimention[1]
-        self.play_area_height_offset = sheight - play_area_height
+        self._play_area_height_offset = sheight - play_area_height
 
     def render(self):
         """
@@ -50,8 +49,8 @@ class PlayArea():
         for row in range(self.dimention[1]):
             for col in range(self.dimention[0]):
                 draw_cord = (
-                    self.top_left[0] + gv.TILE_WIDTH * col,
-                    self.top_left[1] + gv.TILE_WIDTH * row
+                    self._top_left[0] + gv.TILE_WIDTH * col,
+                    self._top_left[1] + gv.TILE_WIDTH * row
                 )
                 pg.draw.rect(
                     app.App.get_surface(),
@@ -68,23 +67,23 @@ class PlayArea():
         pg.draw.line(
             app.App.get_surface(),
             gv.WHITE,
-            (self.top_left[0] - 1, self.top_left[1]),
-            (self.top_left[0] - 1, self.bottom_right[1])
+            (self._top_left[0] - 1, self._top_left[1]),
+            (self._top_left[0] - 1, self._bottom_right[1])
         )
         pg.draw.line(
             app.App.get_surface(),
             gv.WHITE,
-            (self.bottom_right[0], self.bottom_right[1]),
-            (self.bottom_right[0], self.top_left[1])
+            (self._bottom_right[0], self._bottom_right[1]),
+            (self._bottom_right[0], self._top_left[1])
         )
         pg.draw.rect(
             app.App.get_surface(),
             gv.WHITE,
             (
-                self.top_left[0] + 1,
-                self.bottom_right[1] + 1,
-                self.play_area_width,
-                self.play_area_height_offset
+                self._top_left[0] + 1,
+                self._bottom_right[1] + 1,
+                self._play_area_width,
+                self._play_area_height_offset
             )
         )
     

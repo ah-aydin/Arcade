@@ -42,7 +42,7 @@ class Button(Clickable):
             pos_x = self.pos[0] + (self.size[0] - text_size[0]) // 2
             pos_y = self.pos[1] + (self.size[1] - text_size[1]) // 2
             # Create and add the text as a child of button
-            self.children.append(
+            self._children.append(
                 HudText(
                     ( # Position
                         pos_x,
@@ -55,7 +55,7 @@ class Button(Clickable):
                 )
             )
     
-    def self_render(self):
+    def _self_render(self):
         pg.draw.rect(
             app.App.get_surface(),
             self.current_color,

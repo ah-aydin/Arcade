@@ -57,7 +57,7 @@ class Part():
         self.size = size
         self.color = color
         self.direction = direction
-        self.snake_reference = snake
+        self._snake_reference = snake
 
     def set_direction(self, direction):
         """
@@ -82,11 +82,11 @@ class Part():
         self.pos = (self.pos[0] % gv.PLAY_AREA_DIMENTION, self.pos[1] % gv.PLAY_AREA_DIMENTION)
 
         # Check if there is a turn point
-        if self.pos in self.snake_reference.turnpoints.keys():
-            self.set_direction(self.snake_reference.turnpoints[self.pos])
+        if self.pos in self._snake_reference.turnpoints.keys():
+            self.set_direction(self._snake_reference.turnpoints[self.pos])
             # If it is the tail of the snake remove the turnpoint
-            if self == self.snake_reference.tail:
-                del self.snake_reference.turnpoints[self.pos]
+            if self == self._snake_reference.tail:
+                del self._snake_reference.turnpoints[self.pos]
 
     def render(self):
         """

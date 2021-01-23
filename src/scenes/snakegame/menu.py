@@ -6,13 +6,16 @@ import app
 
 # Scene
 import scenes as s
-from scenes.scene import Scene
+from scenes.scene import BaseMenu
 
 # Game modules
 from .game_variables import GameVariables as gv
 from .game import Game
 
-class Menu(Scene):
+class Menu(BaseMenu):
+    """
+    Menu for the snake game
+    """
     def __init__(self):
         super(Menu, self).__init__()
 
@@ -25,7 +28,7 @@ class Menu(Scene):
         )
 
         # Create the UI elements
-        self.uiElements = [
+        self._uiElements += [
             s.Button( # Button to increment the level
                 (
                     screen_size[0] // 2 + button_size[0],
@@ -86,32 +89,32 @@ class Menu(Scene):
                 text = "SNAKE",
                 font_size = 200,
                 text_centered = True
+            ),
+            s.Button( # Back to main menu button
+                (
+                    screen_size[0] // 2 - button_size[0] * 2,
+                    screen_size[1] // 2 + button_size[1] + 18
+                ),
+                (
+                    button_size[0] * 4,
+                    int(button_size[1] * 0.5)
+                ),
+                (110, 110, 100),
+                text = "BACK TO MENU",
+                font_size = 50,
             )
         ]
 
         # Set the onclick methods for the buttons
-        self.uiElements[0].set_on_mouse_click(lambda: self.increment_starting_level()) # Increment level
-        self.uiElements[1].set_on_mouse_click(lambda: self.decrement_starting_level()) # Decrement level
-        self.uiElements[3].set_on_mouse_click(lambda: app.App.set_current_game(Game(self.starting_level))) # Start's the game
+        self._uiElements[0].set_on_mouse_click(lambda: self._increment_starting_level()) # Increment level
+        self._uiElements[1].set_on_mouse_click(lambda: self._decrement_starting_level()) # Decrement level
+        self._uiElements[3].set_on_mouse_click(lambda: app.App.set_current_scene(Game(self._starting_level))) # Start's the game
+        self._uiElements[5].set_on_mouse_click(lambda: app.App.set_current_scene(s.MainMenu())) # Goes back to main menu
 
-        # Map the mouse click mapping for the clickable objects
-        self.mouseClickMapping = [[None for y in range(screen_size[0])] for x in range(screen_size[1])]
-        self.generateMouseClickMapping()
+        self._generateMouseClickMapping()
 
         # Varaible to keep track of the starting level
-        self.starting_level = 0
-
-    def generateMouseClickMapping(self):
-        """
-        Generates the moue click mapping
-        """
-        for elem in self.uiElements:
-            if issubclass(type(elem), s.Clickable):
-                xpos, ypos = elem.pos
-                for x in range(elem.size[0]):
-                    for y in range(elem.size[1]):
-                        if ypos + y < len(self.mouseClickMapping) and xpos + x < len(self.mouseClickMapping[0]) and ypos + y >= 0 and xpos + x >= 0:
-                            self.mouseClickMapping[ypos + y][xpos + x] = elem
+        self._starting_level = 0
 
     def update(self):
         """
@@ -124,35 +127,24 @@ class Menu(Scene):
         Renders the menu
         """
         # Render the UI
-        for elem in self.uiElements:
+        for elem in self._uiElements:
             elem.render()
-    
-    def mouse_move_event(self, pos):
-        return
-    
-    def mouse_click_event(self, pos):
-        """
-        Called when there is a mouse click event
-        """
-        elem = self.mouseClickMapping[pos[1]][pos[0]]
-        if elem != None:
-            elem.on_mouse_click()
-    
-    def increment_starting_level(self):
+        
+    def _increment_starting_level(self):
         """
         Increment's the starting level
         """
-        self.starting_level += 1
+        self._starting_level += 1
         # If the starting level goes outside the level range, undo the operation
-        if self.starting_level < 0 or self.starting_level >= len(gv.LEVEL_FPS):
-            self.starting_level -= 1
-        self.uiElements[2].set_text("Level: " + str(self.starting_level))
-    def decrement_starting_level(self):
+        if self._starting_level < 0 or self._starting_level >= len(gv.LEVEL_FPS):
+            self._starting_level -= 1
+        self._uiElements[2].set_text("Level: " + str(self._starting_level))
+    def _decrement_starting_level(self):
         """
         Decrement's the starting level
         """
-        self.starting_level -= 1
+        self._starting_level -= 1
         # If the starting level goes outside the level range, undo the operation
-        if self.starting_level < 0 or self.starting_level >= len(gv.LEVEL_FPS):
-            self.starting_level += 1
-        self.uiElements[2].set_text("Level: " + str(self.starting_level))
+        if self._starting_level < 0 or self._starting_level >= len(gv.LEVEL_FPS):
+            self._starting_level += 1
+        self._uiElements[2].set_text("Level: " + str(self._starting_level))
