@@ -7,7 +7,7 @@ import app
 # Scene
 from scenes.scene import BaseMenu
 
-from scenes import SnakeMenu, TetrisMenu
+from scenes import SnakeMenu, TetrisMenu, SpaceShootyShootyMenu
 
 # Ui elements
 from scenes import Button
@@ -23,14 +23,14 @@ class MainMenu(BaseMenu):
         self._uiElements += [
             Button((100, 100), (300, 150), (255, 0, 0), text="Snake", font_size=30),
             Button((500, 100), (300, 150), (255, 0, 0), text="Tetris", font_size=30),
-            Button((900, 100), (300, 150), (255, 0, 0), text="Nothing here at the moment", font_size=30),
+            Button((900, 100), (300, 150), (255, 0, 0), text="Space Shooty Shooty", font_size=30),
             Button((100, 400), (300, 150), (255, 0, 0), text="Exit", font_size=30),
         ]
 
         # Set the buttons functionality
-        self._uiElements[0].set_on_mouse_click(lambda: app.App.set_current_scene(SnakeMenu())) # This opens the snake game menu
-        self._uiElements[1].set_on_mouse_click(lambda: app.App.set_current_scene(TetrisMenu())) # This opens the tetris game
-        self._uiElements[2].set_on_mouse_click(lambda: print(3)) # This prints 3
+        self._uiElements[0].set_on_mouse_click(lambda: app.App.set_current_scene(SnakeMenu())) # Opens the snake menu
+        self._uiElements[1].set_on_mouse_click(lambda: app.App.set_current_scene(TetrisMenu())) # opens the tetris menu
+        self._uiElements[2].set_on_mouse_click(lambda: app.App.set_current_scene(SpaceShootyShootyMenu())) # Opens the space shooty shooty menu
         self._uiElements[3].set_on_mouse_click(lambda: app.App.set_running(False)) # This exits the application
 
         self._generateMouseClickMapping()
@@ -55,10 +55,3 @@ class MainMenu(BaseMenu):
     def mouse_move_event(self, pos):
         return
     
-    def mouse_click_event(self, pos):
-        """
-        Called when there is a mouse click event
-        """
-        elem = self._mouseClickMapping[pos[1]][pos[0]]
-        if elem != None:
-            elem.on_mouse_click()

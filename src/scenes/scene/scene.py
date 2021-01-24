@@ -35,6 +35,10 @@ class Scene:
     def _render(self):
         pass
     
+    def _renderUI(self):
+        for ui_element in self._uiElements:
+            ui_element.render()
+
     def _generateMouseClickMapping(self):
         """
         Generates the moue click mapping

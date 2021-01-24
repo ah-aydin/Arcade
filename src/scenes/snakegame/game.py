@@ -16,7 +16,7 @@ import scenes as s
 
 class Game(BaseGame):
     """
-    The game class for the _snake game
+    The game class for the snake game
     starting_level = The starting level of the game
     """
     def __init__(self, starting_level):
@@ -123,7 +123,7 @@ class Game(BaseGame):
             # formula = base _level * 20 + 100 - 2 * min(steps made, 40) * (_level + 1)
             self._score += self._base_level * 20 + (gv.DEFAULT_SCORE - gv.PENALTY_PER_STEP * min(self._steps_made, gv.STEPS_LIMIT)) * (self._level + 1)
             # Update the _score text
-            self._uiElements[0].set_text("Lcore: " + str(self._score))
+            self._uiElements[0].set_text("Score: " + str(self._score))
             # Reset the number of steps made
             self._steps_made = 0
 
@@ -150,9 +150,8 @@ class Game(BaseGame):
         self._pa.render()
         self._snake.render()
         self._food.render()
-        # Render every UI element
-        for ui_element in self._uiElements:
-            ui_element.render()
+        # Render the UI
+        self._renderUI()
 
     def update_grid(self):
         """

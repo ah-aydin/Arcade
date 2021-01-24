@@ -139,8 +139,7 @@ class Game(BaseGame):
         self._current_tetromino.render()
         self._next_tetromino_preview.render()
         # Render the UI
-        for ui_element in self._uiElements:
-            ui_element.render()
+        self._renderUI()
     
     def _calculate_score(self, rows_filled):
         """
