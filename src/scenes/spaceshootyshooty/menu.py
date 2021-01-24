@@ -89,6 +89,5 @@ class Menu(BaseMenu):
         Renders the menu
         """
         # Render the UI
-        for elem in self._uiElements:
-            elem.render()
+        self._renderUI()
         

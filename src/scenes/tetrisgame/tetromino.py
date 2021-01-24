@@ -52,7 +52,7 @@ class Tetromino():
         self.pos = (5, 0)
         self.blocks = []
         
-        self.generate_blocks()
+        self._generate_blocks()
     
     def render(self):
         """
@@ -90,15 +90,15 @@ class Tetromino():
         Rotates the tetromino clockwise
         """
         self.rotation += 1
-        self.generate_blocks()
+        self._generate_blocks()
     def rotate_anticlockwise(self):
         """
         Rotates the tetromino anti-clockwise
         """
         self.rotation -= 1
-        self.generate_blocks()
+        self._generate_blocks()
 
-    def generate_blocks(self):
+    def _generate_blocks(self):
         """
         Genereates the blocks of the tetromino according to its blueprint and its rotation
         """

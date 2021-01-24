@@ -20,7 +20,7 @@ CURRENT_FRAME = 0
 BLACK = (0, 0, 0)
 
 # Create the render target
-App.set_surface(pg.display.set_mode(flags=pg.FULLSCREEN))
+App.set_surface(pg.display.set_mode((1920, 1080), flags=pg.FULLSCREEN))
 
 # Create and mark the MainMenu as the current game
 App.set_current_scene(MainMenu())
