@@ -18,7 +18,7 @@ class BaseGame(Scene):
             screen_size[1] // 10 * 2,
             screen_size[1] // 10
         )
-        self.pauseMenuUiElements = [
+        self._pauseMenuUiElements = [
             s.Button( # This is just to have a back drop behind all the newly added ui elements
                 (
                     int(screen_size[0] // 2 - screen_size[0] * 0.6 // 2),
@@ -62,8 +62,8 @@ class BaseGame(Scene):
             )
         ]
         
-        self.pauseMenuUiElements[2].set_on_mouse_click(lambda: app.App.set_current_scene(s.MainMenu()))
-        self.pauseMenuUiElements[3].set_on_mouse_click(lambda: self.toggle_pause())
+        self._pauseMenuUiElements[2].set_on_mouse_click(lambda: app.App.set_current_scene(s.MainMenu()))
+        self._pauseMenuUiElements[3].set_on_mouse_click(lambda: self.toggle_pause())
 
     def toggle_pause(self):
         if not self._pause:
@@ -75,7 +75,7 @@ class BaseGame(Scene):
         self._pause = True
         
         # Add in the UI elements for the _pause state
-        self.uiElements += self.pauseMenuUiElements
+        self._uiElements += self._pauseMenuUiElements
 
         # Since some buttons are added to the screen
         # Generate the mouse click mapping
@@ -85,4 +85,4 @@ class BaseGame(Scene):
         self._pause = False
 
         # Remove the _pause menu items from the UI
-        self.uiElements = self.uiElements[:-len(self.pauseMenuUiElements)]
+        self._uiElements = self._uiElements[:-len(self._pauseMenuUiElements)]

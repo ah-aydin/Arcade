@@ -1,7 +1,6 @@
 # Python modules
 import pygame as pg
 import time
-import sys
 
 # App modules
 from app import App
