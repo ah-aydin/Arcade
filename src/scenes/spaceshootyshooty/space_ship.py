@@ -33,7 +33,11 @@ class SpaceShip():
         self._size = size
         self._speed = speed
         self._rotation_speed = rotation_speed
-        self._rect = pg.Rect(*pos, *size)
+        self._rect = pg.Rect(
+            pos[0] - size[0] // 2,
+            pos[1] - size[1] // 2,
+            *size
+        )
 
         self._movement = 0
         self._turning = 0
@@ -73,9 +77,25 @@ class SpaceShip():
         """
         Moves the ship
         """
+        # If the ship is not in move state, return
+        if self._movement == 0:
+            return
+
+        # Get the new positons
+        new_x = self._pos[0] + self._movement * int(self._speed * math.cos(math.radians(self._rotation)))
+        new_y = self._pos[1] + self._movement * int(self._speed * math.sin(math.radians(self._rotation)))
+
+        # Check if the new positions are outside the play area
+        if new_x < 0: new_x = 0
+        if new_x > gv.PLAY_AREA_WIDTH: new_x = gv.PLAY_AREA_WIDTH
+        if new_y < 0: new_y = 0
+        if new_y > gv.PLAY_AREA_HEIGHT: new_y = gv.PLAY_AREA_HEIGHT
+
+        self._pos = (new_x, new_y)
+
         self._rect = pg.Rect(
-            self._rect.x + self._movement * int(self._speed * math.cos(math.radians(self._rotation))),
-            self._rect.y + self._movement * int(self._speed * math.sin(math.radians(self._rotation))),
+            self._pos[0] - self._size[0] // 2,
+            self._pos[1] - self._size[1] // 2,
             *self._size
         )
     
