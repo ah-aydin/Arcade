@@ -2,6 +2,7 @@
 import math
 import pygame as pg
 import pygame.transform as T
+import os
 
 # App modules
 import app
@@ -17,7 +18,7 @@ class Projectile():
         self,
         pos: (int, int) = (0, 0),
         rotation: int = 0,
-        size: (int, int) = (30, 10),
+        size: (int, int) = (70, 30),
         speed: int = 20
     ):
         self._pos = pos
@@ -30,16 +31,26 @@ class Projectile():
             *size
         )
 
+        # Load in the sprite
+        self._sprite = pg.image.load(os.path.join("res", "projectile.png"))
+        self._sprite = pg.transform.scale(self._sprite, size)
+
         # Default surface to hold the sprite
         self._surface = pg.Surface(self._rect.size, flags=pg.SRCALPHA)
-        pg.draw.ellipse(self._surface, (0, 0, 255), (0, 0, *size))
+        self._surface.blit(self._sprite, (0, 0))
     
     def update(self):
+        new_x = self._rect.x + int(self._speed * math.cos(math.radians(self._rotation)))
+        new_y = self._rect.y + int(self._speed * math.sin(math.radians(self._rotation)))
+
         self._rect = pg.Rect(
-            self._rect.x + int(self._speed * math.cos(math.radians(self._rotation))),
-            self._rect.y + int(self._speed * math.sin(math.radians(self._rotation))),
+            new_x,
+            new_y,
             *self._size
         )
+        self._pos = self._rect.center
+
+        self._out_of_bounds()
     
     def render(self):
         """
@@ -59,3 +70,15 @@ class Projectile():
                 self._rect.center[1] + int(self._speed * math.sin(math.radians(self._rotation)))
             )
         )
+    
+    def _out_of_bounds(self):
+        """
+        Checks if the projectile is out of bounds.
+        If it is, it gets removed from the game
+        """
+        # Check if it is out of bounds
+        if self._pos[0] < 0 or self._pos[0] > gv.PLAY_AREA_WIDTH or self._pos[1] < 0 or self._pos[1] > gv.PLAY_AREA_HEIGHT:
+            # Remove it from the game
+            app.App.get_current_scene().remove_game_object(self)
+        
+        del self

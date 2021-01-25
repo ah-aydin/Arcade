@@ -2,6 +2,7 @@
 import math
 import pygame as pg
 import pygame.transform as T
+import os
 
 # App modules
 import app
@@ -42,9 +43,13 @@ class SpaceShip():
         self._movement = 0
         self._turning = 0
 
-        # Default surface to hold the sprite
+        # Load in the sprite
+        self._sprite = pg.image.load(os.path.join("res", "space_ship.png"))
+        self._sprite = pg.transform.scale(self._sprite, size)
+
+        # Default surface to hold the sprite and put it on
         self._surface = pg.Surface(self._rect.size, flags=pg.SRCALPHA)
-        pg.draw.ellipse(self._surface, (255, 0, 0), (0, 0, *size))
+        self._surface.blit(self._sprite, (0, 0))
 
     def render(self):
         """

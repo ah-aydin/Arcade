@@ -20,7 +20,7 @@ class Game(BaseGame):
         self._space_ship = SpaceShip(
             (500, 500),
             0,
-            (100, 30),
+            (100, 100),
             gv.SPACE_SHIP_SPEED,
             gv.SPACE_SHIP_ROTATION_SPEED
         )

@@ -90,4 +90,16 @@ class BaseGame(Scene):
         self._uiElements = self._uiElements[:-len(self._pauseMenuUiElements)]
     
     def add_game_object(self, obj):
+        """
+        Add's the given objects to the list of game objects of the scene
+        """
         self._gameObjects.append(obj)
+    
+    def remove_game_object(self, obj):
+        """
+        Remove's the given game object from the list of the game objects
+        """
+        try:
+            self._gameObjects.remove(obj)
+        except:
+            print("Game object in question is not in the game object list")
