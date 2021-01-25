@@ -7,6 +7,7 @@ import pygame.transform as T
 import app
 
 # Game modules
+from .projectile import Projectile as P
 from .game_variables import GameVariables as gv
 
 class SpaceShip():
@@ -34,8 +35,11 @@ class SpaceShip():
         self._rotation_speed = rotation_speed
         self._rect = pg.Rect(*pos, *size)
 
+        self._movement = 0
+        self._turning = 0
+
         # Default surface to hold the sprite
-        self._surface = pg.Surface(self._rect.size)
+        self._surface = pg.Surface(self._rect.size, flags=pg.SRCALPHA)
         pg.draw.ellipse(self._surface, (255, 0, 0), (0, 0, *size))
 
     def render(self):
@@ -57,22 +61,44 @@ class SpaceShip():
             )
         )
     
-    def move(self, m):
+    def pass_input(self, movement, turning):
+        self._movement = movement
+        self._turning = turning
+
+    def update(self):
+        self._move()
+        self._turn()
+
+    def _move(self):
         """
         Moves the ship
         """
         self._rect = pg.Rect(
-            self._rect.x + m * int(self._speed * math.cos(math.radians(self._rotation))),
-            self._rect.y + m * int(self._speed * math.sin(math.radians(self._rotation))),
+            self._rect.x + self._movement * int(self._speed * math.cos(math.radians(self._rotation))),
+            self._rect.y + self._movement * int(self._speed * math.sin(math.radians(self._rotation))),
             *self._size
         )
     
-    def turn(self, ammount):
+    def _turn(self):
         """
         Turn the ship
         """
-        self._rotation += ammount * self._rotation_speed
+        self._rotation += self._turning * self._rotation_speed
         if self._rotation > 359:
             self._rotation -= 360
         if self._rotation < 0 :
             self._rotation += 360
+
+    def get_rotation(self):
+        """
+        Returns the rotation of the object
+        """
+        return self._rotation
+    
+    def fire(self):
+        """
+        The function name is self explenatory
+        """
+        # Spawn a projectile
+        app.App().get_current_scene().add_game_object(P(self._rect.center, self._rotation, speed = gv.PROJECTILE_SPEED))
+        

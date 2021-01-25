@@ -25,6 +25,8 @@ class Game(BaseGame):
             gv.SPACE_SHIP_ROTATION_SPEED
         )
 
+        self._gameObjects.append(self._space_ship)
+
         # Variales to keep track of the ship's movement
         self._FORWARD = 0
         self._BACKWARD = 0
@@ -50,14 +52,22 @@ class Game(BaseGame):
             self._TURN_RIGHT = 1
         if key == pg.K_LEFT:
             self._TURN_LEFT = 1
+        if key == pg.K_SPACE:
+            self._space_ship.fire()
         
 
     def update(self):
         if not self._pause:
-            self._space_ship.move(self._FORWARD - self._BACKWARD)
-            self._space_ship.turn(self._TURN_RIGHT - self._TURN_LEFT)
+            # Pass along the movement variables to th ship
+            self._space_ship.pass_input(self._FORWARD - self._BACKWARD, self._TURN_RIGHT - self._TURN_LEFT)
+            for gameObject in self._gameObjects:
+                gameObject.update()
         self.render()
     
     def render(self):
+        # Render the game objects
         self._space_ship.render()
+        for gameObject in self._gameObjects:
+            gameObject.render()
+        # Render the UI
         self._renderUI()

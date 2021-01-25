@@ -10,6 +10,8 @@ class BaseGame(Scene):
     def __init__(self):
         super(BaseGame, self).__init__()
 
+        self._gameObjects = []
+
         self._pause = False
         screen_size = app.App.get_surface().get_size()
 
@@ -86,3 +88,6 @@ class BaseGame(Scene):
 
         # Remove the _pause menu items from the UI
         self._uiElements = self._uiElements[:-len(self._pauseMenuUiElements)]
+    
+    def add_game_object(self, obj):
+        self._gameObjects.append(obj)
